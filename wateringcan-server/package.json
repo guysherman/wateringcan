@@ -19,6 +19,7 @@
     "eslint-plugin-import": "^2.22.0"
   },
   "dependencies": {
+    "@types/argon2": "^0.15.0",
     "@types/chai": "^4.2.12",
     "@types/dotenv": "^8.2.0",
     "@types/knex": "^0.16.1",
@@ -26,6 +27,7 @@
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-router": "^7.4.1",
     "@types/mocha": "^8.0.1",
+    "argon2": "^0.26.2",
     "chai": "^4.2.0",
     "dotenv": "^8.2.0",
     "knex": "^0.21.2",
@@ -34,6 +36,7 @@
     "koa-router": "^9.1.0",
     "mocha": "^8.1.1",
     "nodemon": "^2.0.4",
+    "pg": "^8.3.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   }
