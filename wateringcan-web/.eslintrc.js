@@ -2,7 +2,7 @@ module.exports = {
     settings: {
         'import/resolver': {
             node: {
-                extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss', '.css'],
             },
         },
     },
@@ -12,6 +12,7 @@ module.exports = {
     },
     extends: [
         'plugin:react/recommended',
+        'plugin:css-modules/recommended',
         'airbnb',
     ],
     parser: '@typescript-eslint/parser',
@@ -25,11 +26,13 @@ module.exports = {
     plugins: [
         'react',
         '@typescript-eslint',
+        'css-modules',
     ],
     rules: {
         indent: ['error', 4],
         'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.tsx'] }],
         'react/jsx-indent': [1, 4, { checkAttributes: true, indentLogicalExpressions: true }],
-        'import/extensions': ['error', 'never'],
+        'import/extensions': 'off',
+        'arrow-body-style': 'off',
     },
 };

@@ -1,0 +1,39 @@
+@import './colors.scss';
+
+.loginGrid {
+    height: 98vh;
+    display: grid;
+    grid-template-columns: 1fr 500px 1fr;
+    grid-template-rows: 1fr 300px 1fr;
+    grid-template-areas:
+        ". . ."
+        ". loginPanel ."
+        ". . .";
+}
+
+.loginPanel {
+    grid-area: loginPanel;
+    display: flex;
+    
+    flex-direction: column;
+    justify-content: flex-start;
+
+
+    background-color: $Tema-de-color-30-2-hex;
+    border-radius: 10px;
+}
+
+.fieldRow {
+    display: flex;
+
+    margin: 0.5rem 5em 0rem 5rem;
+
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+
+    &-button {
+        @extend .fieldRow;
+        justify-content: flex-end;
+    }
+}

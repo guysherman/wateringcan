@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
+// eslint-disable-next-line no-console
+console.log(`Webpack Mode: ${isDevelopment}`);
 
 module.exports = {
 
@@ -65,6 +67,10 @@ module.exports = {
                         },
                     },
                 ],
+            },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
             },
         ],
     },
