@@ -34,5 +34,23 @@ module.exports = {
         'react/jsx-indent': [1, 4, { checkAttributes: true, indentLogicalExpressions: true }],
         'import/extensions': 'off',
         'arrow-body-style': 'off',
+        'no-param-reassign': 'off',
+        'jsx-a11y/label-has-for': [1, {
+            components: ['Label'],
+            required: {
+                every: ['id'],
+            },
+            allowChildren: false,
+        }],
     },
+    overrides: [
+        {
+            files: ['**/*.ts', '**/*.tsx'],
+            rules: {
+                'no-unused-vars': ['off'],
+                'no-undef': ['off'],
+                '@typescript-eslint/no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
+            },
+        },
+    ],
 };

@@ -4,6 +4,13 @@ module.exports = {
         commonjs: true,
         es2020: true,
     },
+    settings: {
+        'import/resolver': {
+            node: {
+                extensions: ['.js', '.ts'],
+            },
+        },
+    },
     extends: [
         'airbnb-base',
     ],
@@ -16,6 +23,17 @@ module.exports = {
     ],
     rules: {
         indent: ['error', 4],
-        'import/extensions': ['error', 'never'],
+        'import/extensions': 'off',
+        'arrow-body-style': 'off',
     },
+    overrides: [
+        {
+            files: ['**/*.ts'],
+            rules: {
+                'no-unused-vars': ['off'],
+                'no-undef': ['off'],
+                '@typescript-eslint/no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
+            },
+        },
+    ],
 };

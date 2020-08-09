@@ -4,7 +4,7 @@ exports.up = (knex) => {
         table.increments('id');
         table.text('first_name').notNullable();
         table.text('last_name').notNullable();
-        table.text('username').notNullable().unique();
+        table.text('email').notNullable().unique();
         table.text('hash').notNullable();
     });
 };

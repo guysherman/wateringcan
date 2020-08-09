@@ -1,14 +1,17 @@
 /* eslint-disable no-console */
-import * as dotenv from 'dotenv';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as bodyParser from 'koa-bodyparser';
+import * as cors from '@koa/cors';
 
-dotenv.config();
+import './env';
+
+import authenticationController from './controllers/AuthenticationController';
 
 const app = new Koa();
 const router = new Router();
 
+app.use(cors({ credentials: true }));
 app.use(bodyParser());
 
 router.get('/', async (ctx) => {
@@ -16,6 +19,7 @@ router.get('/', async (ctx) => {
 });
 
 app.use(router.routes());
+app.use(authenticationController.routes());
 app.listen(3000);
 
 console.log('Server running on port 3000');

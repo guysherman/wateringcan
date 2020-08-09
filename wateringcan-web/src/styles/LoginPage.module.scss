@@ -35,5 +35,14 @@
     &-button {
         @extend .fieldRow;
         justify-content: flex-end;
+
+        button {
+            margin-left: 0.5rem;
+        }
     }
+}
+
+.errorMessage {
+    font-size: 0.5rem;
+    color: red;
 }
