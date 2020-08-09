@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useImmer } from 'use-immer';
 
-import LoginController, { LoginResponse, ILoginController } from '../controllers/LoginController';
 import { apiUrl } from '../config';
+import { AppContext } from './App';
+
+import LoginController, { LoginResponse, ILoginController } from '../controllers/LoginController';
 
 import styles from '../styles/LoginPage.module.scss';
 
@@ -13,6 +15,7 @@ interface LoginForm {
 }
 
 const LoginPage = () => {
+    const appContext = useContext(AppContext);
     const controller : ILoginController = new LoginController(apiUrl);
 
     const initialLoginForm: LoginForm = {
@@ -55,6 +58,7 @@ const LoginPage = () => {
             case 'success':
                 // eslint-disable-next-line no-console
                 console.log(response);
+                appContext.updateLogin(response);
                 break;
             default:
                 updateLoginForm((draft) => {

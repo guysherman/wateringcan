@@ -1,8 +1,10 @@
 @import './colors.scss';
 
 .loginGrid {
-    height: 98vh;
     display: grid;
+
+    height: 100vh;
+    
     grid-template-columns: 1fr 500px 1fr;
     grid-template-rows: 1fr 300px 1fr;
     grid-template-areas:

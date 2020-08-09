@@ -1,11 +1,13 @@
 export interface LoginSuccess {
-    state: 'success';
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    token: string;
+    state?: 'success';
+    id?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    token?: string;
 }
+
+export type LoginState = LoginSuccess;
 
 export interface LoginError {
     state: 'error';
