@@ -7,7 +7,7 @@
     "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/index.ts",
     "new-migration": "knex migrate:make",
     "migrate": "knex migrate:latest",
-    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts'"
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -u tdd -r ts-node/register 'test/**/*.ts'"
   },
   "author": "Guy Sherman",
   "license": "MIT",
@@ -41,6 +41,7 @@
     "mocha": "^8.1.1",
     "nodemon": "^2.0.4",
     "pg": "^8.3.0",
+    "sqlite3": "^5.0.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   }

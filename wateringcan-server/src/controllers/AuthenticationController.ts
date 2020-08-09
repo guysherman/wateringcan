@@ -3,34 +3,7 @@ import * as argon2 from 'argon2';
 import * as NodeJwt from 'jsonwebtoken';
 
 import DatabaseConnector from '../connectors/DatabaseConnector';
-
-export interface UserRecord {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    hash: string;
-}
-// eslint-disable-next-line import/prefer-default-export
-export class UserRepository {
-    private db: any;
-
-    constructor(db: any) {
-        this.db = db;
-    }
-
-    async getUserWithEmail(email: string): Promise<UserRecord | null> {
-        const [user] = await this.db('user').where({ 'user.email': email }).select({
-            id: 'user.id',
-            firstName: 'user.first_name',
-            lastName: 'user.last_name',
-            email: 'user.email',
-            hash: 'user.hash',
-        });
-
-        return user;
-    }
-}
+import UserRepository, { UserRecord } from '../repositories/UserRepository';
 
 const dbc = DatabaseConnector();
 const users = new UserRepository(dbc);
