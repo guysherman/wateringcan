@@ -1,6 +1,6 @@
 import * as knex from 'knex';
 
-const DatabaseConnector = () => {
+const DatabaseConnector = (): knex => {
     console.log(`PG_HOST: ${process.env.PG_HOST}`);
     return knex({
         client: 'pg',

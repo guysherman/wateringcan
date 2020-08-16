@@ -1,3 +1,5 @@
+import * as knex from 'knex';
+
 export interface UserRecord {
     id: number;
     firstName: string;
@@ -8,9 +10,9 @@ export interface UserRecord {
 
 // eslint-disable-next-line import/prefer-default-export
 export default class UserRepository {
-    private db: any;
+    private db: knex;
 
-    constructor(db: any) {
+    constructor(db: knex) {
         this.db = db;
     }
 

@@ -11,7 +11,7 @@ import authenticationController from './controllers/AuthenticationController';
 const app = new Koa();
 const router = new Router();
 
-app.use(cors({ credentials: true }));
+app.use(cors({ origin: '*', credentials: true }));
 app.use(bodyParser());
 
 router.get('/', async (ctx) => {
