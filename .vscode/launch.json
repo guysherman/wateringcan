@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/wateringcan-server/src/index.ts",
+            "cwd": "${workspaceFolder}/wateringcan-server",
+            "preLaunchTask": "tsc: build - wateringcan-server/tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/wateringcan-server/dist/**/*.js"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha All",
+            "program": "${workspaceFolder}/wateringcan-server/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/wateringcan-server",
+            "args": [
+                "-u",
+                "tdd",
+                "-r",
+                "ts-node/register",
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/wateringcan-server/test/**/*.ts",
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "protocol": "inspector"
+        },
+    ]
+}

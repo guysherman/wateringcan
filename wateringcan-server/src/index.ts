@@ -7,6 +7,7 @@ import * as cors from '@koa/cors';
 import './env';
 
 import authenticationController from './controllers/AuthenticationController';
+import frameworkController from './controllers/FrameworkController';
 
 const app = new Koa();
 const router = new Router();
@@ -20,6 +21,7 @@ router.get('/', async (ctx) => {
 
 app.use(router.routes());
 app.use(authenticationController.routes());
+app.use(frameworkController.routes());
 app.listen(3000);
 
 console.log('Server running on port 3000');

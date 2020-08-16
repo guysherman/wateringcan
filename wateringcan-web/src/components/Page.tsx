@@ -1,20 +1,20 @@
 import React from 'react';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
 
+import NavBar from './NavBar';
+import FrameworksPage from './FrameworksPage';
+import DummyPage from './DummyPage';
 import styles from '../styles/Page.module.scss';
+
 
 const Page = () => {
     return (
         <div className={styles.pageContainer}>
-            <div className={styles.navBar}>
-                <div className={styles.navBody}>
-                    <span className={styles.appTitle}>WateringCan</span>
-                </div>
-            </div>
-            <div className={styles.bodyContainer}>
-                <div className={styles.bodyContent}>
-                    <h1>Hello World</h1>
-                </div>
-            </div>
+            <Router>
+                <NavBar />
+                <Route exact path="/frameworks" component={FrameworksPage} />
+                <Route exact path="/" component={DummyPage} />
+            </Router>
         </div>
     );
 };

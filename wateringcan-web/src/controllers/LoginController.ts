@@ -7,26 +7,38 @@ export interface LoginSuccess {
     token?: string;
 }
 
+export interface SuccessResponse {
+    state?: 'success';
+    response: any;
+}
+
 export type LoginState = LoginSuccess;
 
-export interface LoginError {
+export interface ErrorResponse {
     state: 'error';
     errorMessage: string;
 }
 
 export type LoginResponse =
     | LoginSuccess
-    | LoginError;
+    | ErrorResponse;
 
-export interface ILoginController {
+export type ApiResponse = 
+    | SuccessResponse
+    | ErrorResponse;
+
+    export interface ILoginController {
     login(email: string, password: string) : Promise<LoginResponse>;
+    getPermittedObjects(userId: string) : Promise<ApiResponse>;
 }
 
 export default class LoginController implements ILoginController {
     private apiUrl: string;
+    private userContext: LoginState;
 
-    constructor(apiUrl: string) {
+    constructor(apiUrl: string, userContext: LoginState ) {
         this.apiUrl = apiUrl;
+        this.userContext = userContext;
     }
 
     async login(email: string, password: string) : Promise<LoginResponse> {
@@ -46,7 +58,28 @@ export default class LoginController implements ILoginController {
             return result;
         }
 
-        const result: LoginError = await response.json();
+        const result: ErrorResponse = await response.json();
+        return result;
+    }
+
+    async getPermittedObjects(userId: string) : Promise<ApiResponse> {
+        const url: string = `${this.apiUrl}/auth/user/${userId}/permittedObjects`;
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.userContext.token}`
+            },
+        });
+
+        if (response.ok) {
+            const result : SuccessResponse = await response.json();
+            return result;
+        }
+
+        const result: ErrorResponse = await response.json();
         return result;
     }
 }

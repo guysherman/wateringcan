@@ -33,6 +33,8 @@ services:
 
   db:
     image: postgres
+    volumes:
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
     restart: unless-stopped
     ports: 
       - ${PG_PORT}:${PG_PORT}
@@ -40,4 +42,5 @@ services:
       POSTGRES_PASSWORD: ${PG_PASS}
       POSTGRES_USER: ${PG_USER}
       POSTGRES_DB: ${PG_DATABASE}
+      POSTGRES_MULTIPLE_DATABASES: unittest
  

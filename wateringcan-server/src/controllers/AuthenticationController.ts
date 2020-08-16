@@ -55,4 +55,15 @@ router.post('/login', async (ctx) => {
     };
 });
 
+router.get('/user/:userId/permittedObjects', async (ctx) => {
+    const { userId } = ctx.params;
+
+    const permittedObjects: string = await users.getPermittedObjectsForUser(userId);
+
+    ctx.body = {
+        response: { permittedObjects },
+        state: 'success',
+    };
+})
+
 export default router;

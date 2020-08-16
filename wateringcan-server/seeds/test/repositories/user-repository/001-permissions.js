@@ -9,6 +9,7 @@ exports.seed = (knex) => {
                 { id: 1, object: 'framework', object_id: null, user_id: 1, permission: 'create' },
                 { id: 2, object: 'framework', object_id: null, user_id: 1, permission: 'read' },
                 { id: 3, object: 'framework', object_id: null, user_id: 1, permission: 'write' },
+                { id: 4, object: 'framework', object_id: 2, user_id: 2, permission: 'read' },
             ]);
         });
 };

@@ -1,13 +1,20 @@
+/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
+
 import { assert } from 'chai';
 import * as knex from 'knex';
+
+import '../../src/env';
 
 import UserRepository, { UserRecord } from '../../src/repositories/UserRepository';
 
 const DatabaseConnector = (): knex => {
     return knex({
-        client: 'sqlite3',
+        client: 'pg',
         connection: {
-            filename: './mydb.sqlite',
+            host: process.env.PG_HOST,
+            user: process.env.PG_USER,
+            password: process.env.PG_PASS,
+            database: 'unittest',
         },
         seeds: {
             directory: './seeds/test/repositories/user-repository',
@@ -64,7 +71,7 @@ suite('UserRepository', () => {
             await db?.seed.run();
 
             const ur = new UserRepository(db);
-            const permittedObjects: string = await ur.getPermittedObjectsForUser(2);
+            const permittedObjects: string = await ur.getPermittedObjectsForUser(999999);
 
             assert.isNotNull(permittedObjects, 'string was null');
             assert.equal('', permittedObjects, 'string was incorrect');

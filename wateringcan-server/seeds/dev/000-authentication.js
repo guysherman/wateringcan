@@ -1,8 +1,9 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable arrow-body-style */
-exports.seed = (knex) => {
+exports.seed = async (knex) => {
     // Deletes ALL existing entries
-    return knex('user').del()
+    await knex('permission').del();
+    return await knex('user').del()
         .then(() => {
             // Inserts seed entries
             return knex('user').insert([

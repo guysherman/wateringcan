@@ -1,0 +1,44 @@
+@import './colors.scss';
+
+.navBar {
+    height: 50px;
+    width: 100vw;
+
+    display: flex;
+    justify-content: space-around;
+
+    background-color: $Tema-de-color-30-5-hex;
+}
+
+.navBody {
+    width: 1280px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+}
+
+
+.appTitle {
+    margin: 0px 15px 0px 0px;
+
+    font-size: 1.5rem;
+    font-weight: 900;
+
+    color: $Tema-de-color-30-3-hex;
+}
+
+.menuItem {
+    margin: 0px 5px 0px 0px;
+
+    font-size: 1rem;
+    font-weight: 200;
+
+    color: $Tema-de-color-30-3-hex;
+
+    &Current {
+        @extend .menuItem;
+
+        font-weight: 400;
+    }
+}
