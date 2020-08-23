@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useImmer } from 'use-immer';
+import { unwrapResult } from '@reduxjs/toolkit';
 
-import { apiUrl } from '../config';
-import { AppContext } from './App';
-
-import LoginController, { LoginResponse, ILoginController } from '../controllers/LoginController';
+import { AppDispatch, useAppDispatch } from '../redux/Store';
+import { doLogin } from '../redux/slices/AuthenticationSlice';
 
 import styles from '../styles/LoginPage.module.scss';
 
@@ -15,15 +14,15 @@ interface LoginForm {
 }
 
 const LoginPage = () => {
-    const appContext = useContext(AppContext);
-    const controller : ILoginController = new LoginController(apiUrl, appContext.user);
-
     const initialLoginForm: LoginForm = {
         email: null,
         password: null,
         errorMessage: null,
     };
+
     const [loginForm, updateLoginForm] = useImmer(initialLoginForm);
+
+    const dispatch: AppDispatch = useAppDispatch();
 
     const emailChanged = (event: React.FormEvent<HTMLInputElement>) => {
         const email: string = event.currentTarget.value;
@@ -45,24 +44,12 @@ const LoginPage = () => {
                 draft.errorMessage = 'You must enter both a username and a password';
             });
         } else {
-            const response : LoginResponse = await controller.login(
-                loginForm.email,
-                loginForm.password,
-            );
-            switch (response.state) {
-            case 'error':
+            try {
+                const action = await dispatch(doLogin({ email: loginForm.email, password: loginForm.password }));
+                unwrapResult(action);
+            } catch (err) {
                 updateLoginForm((draft) => {
-                    draft.errorMessage = response.errorMessage;
-                });
-                break;
-            case 'success':
-                // eslint-disable-next-line no-console
-                console.log(response);
-                appContext.updateLogin(response);
-                break;
-            default:
-                updateLoginForm((draft) => {
-                    draft.errorMessage = 'Unknown Error';
+                    draft.errorMessage = 'Email or password incorrect';
                 });
             }
         }

@@ -2,20 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Route, Link, useParams } from 'react-router-dom';
 
 import { apiUrl } from '../config';
-import { AppContext } from './App';
 
 import FrameworkController, { TFramework, TSection, TCapability } from '../controllers/FrameworkController';
 
 import pageStyles from '../styles/Page.module.scss';
 import styles from '../styles/FrameworksPage.module.scss';
-import { use } from 'chai';
-
-
-
 
 const FrameworksList = () => {
-    const appContext = useContext(AppContext);
-    const controller: FrameworkController = new FrameworkController(apiUrl, appContext.user);
+    const controller: FrameworkController = new FrameworkController(apiUrl, { token: '' });
     const [frameworks, setFrameworks] = useState([] as TFramework[]);
     
     useEffect(() => {
@@ -78,9 +72,8 @@ const Section = ({id, name, description, fc}: { id: number, name: string, descri
 };
 
 const FrameworkDetail = () => {
-    const appContext = useContext(AppContext);
     const [framework, setFramework] = useState<TFramework>(null);
-    const controller: FrameworkController = new FrameworkController(apiUrl, appContext.user);
+    const controller: FrameworkController = new FrameworkController(apiUrl, { token: '' });
 
     const { id } : { id: string } = useParams();
 

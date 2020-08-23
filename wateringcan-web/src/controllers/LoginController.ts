@@ -1,47 +1,27 @@
-export interface LoginSuccess {
-    state?: 'success';
-    id?: string;
-    email?: string;
-    firstName?: string;
-    lastName?: string;
-    token?: string;
+import Cookies from 'js-cookie';
+
+export interface User {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    token: string;
+    permittedObjects?: string;
 }
 
-export interface SuccessResponse {
-    state?: 'success';
-    response: any;
-}
-
-export type LoginState = LoginSuccess;
-
-export interface ErrorResponse {
-    state: 'error';
-    errorMessage: string;
-}
-
-export type LoginResponse =
-    | LoginSuccess
-    | ErrorResponse;
-
-export type ApiResponse = 
-    | SuccessResponse
-    | ErrorResponse;
-
-    export interface ILoginController {
-    login(email: string, password: string) : Promise<LoginResponse>;
-    getPermittedObjects(userId: string) : Promise<ApiResponse>;
+export interface ILoginController {
+    login(email: string, password: string) : Promise<User>;
+    getPermittedObjects(userId: string) : Promise<String>;
 }
 
 export default class LoginController implements ILoginController {
     private apiUrl: string;
-    private userContext: LoginState;
 
-    constructor(apiUrl: string, userContext: LoginState ) {
+    constructor(apiUrl: string) {
         this.apiUrl = apiUrl;
-        this.userContext = userContext;
     }
 
-    async login(email: string, password: string) : Promise<LoginResponse> {
+    async login(email: string, password: string) : Promise<User> {
         const url: string = `${this.apiUrl}/auth/login`;
         const response = await fetch(url, {
             method: 'POST',
@@ -53,16 +33,18 @@ export default class LoginController implements ILoginController {
             body: JSON.stringify({ email, password }),
         });
 
-        if (response.ok) {
-            const result : LoginSuccess = await response.json();
-            return result;
+        if (!response.ok) {
+            const responseMessage = await response.json();
+            throw Error(responseMessage.errorMessage);
         }
 
-        const result: ErrorResponse = await response.json();
+        const result : User = await response.json();
+        Cookies.set('x-jwt-token', result.token);
         return result;
+
     }
 
-    async getPermittedObjects(userId: string) : Promise<ApiResponse> {
+    async getPermittedObjects(userId: string) : Promise<String> {
         const url: string = `${this.apiUrl}/auth/user/${userId}/permittedObjects`;
         const response = await fetch(url, {
             method: 'GET',
@@ -70,16 +52,16 @@ export default class LoginController implements ILoginController {
             cache: 'no-cache',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.userContext.token}`
+                Authorization: `Bearer ${Cookies.get('x-jwt-token') || ''}`
             },
         });
 
-        if (response.ok) {
-            const result : SuccessResponse = await response.json();
-            return result;
+        if (!response.ok) {
+            const responseMessage = await response.json();
+            throw Error(responseMessage.errorMessage);
         }
 
-        const result: ErrorResponse = await response.json();
+        const result : string = await response.json();
         return result;
     }
 }
