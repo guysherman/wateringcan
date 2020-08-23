@@ -16,7 +16,7 @@ interface LoginForm {
 
 const LoginPage = () => {
     const appContext = useContext(AppContext);
-    const controller : ILoginController = new LoginController(apiUrl);
+    const controller : ILoginController = new LoginController(apiUrl, appContext.user);
 
     const initialLoginForm: LoginForm = {
         email: null,

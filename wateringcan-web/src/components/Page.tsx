@@ -12,7 +12,7 @@ const Page = () => {
         <div className={styles.pageContainer}>
             <Router>
                 <NavBar />
-                <Route exact path="/frameworks" component={FrameworksPage} />
+                <Route path="/frameworks" component={FrameworksPage} />
                 <Route exact path="/" component={DummyPage} />
             </Router>
         </div>

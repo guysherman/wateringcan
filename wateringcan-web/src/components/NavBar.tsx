@@ -46,7 +46,7 @@ const NavBar = () => {
                     console.log('Unknown error');
             }
         });
-    }, [pathname]);
+    }, [user]);
 
     return (
         <div className={styles.navBar}>
