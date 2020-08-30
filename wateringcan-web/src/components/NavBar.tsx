@@ -1,13 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { RootState } from '../redux/Store';
-import { AuthenticationState } from '../redux/slices/AuthenticationSlice';
-
 import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 
 import styles from '../styles/NavBar.module.scss';
+import { RootState, AuthenticationState } from 'redux/Types';
 
 const allMenuItems = [
     { title: 'Frameworks', path: '/frameworks', permission: 'framework' },
@@ -26,7 +24,7 @@ const NavBar = () => {
 
     const menuItems = allMenuItems.filter(
         i => (
-            permittedObjects
+            permittedObjects!
                 .toLowerCase()
                 .includes(i.permission.toLowerCase())
         )

@@ -1,15 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
 
-import { BaseState, RequestStatus } from '../Types';
-import { apiUrl } from '../../config';
+import { RequestStatus, FrameworksState, SectionsState, CapabilitiesState, BehaviorsState, RootState } from '../Types';
+// import { apiUrl } from '../../config';
 import FrameworkController, { TFramework, TSection, TCapability, TBehavior } from '../../controllers/FrameworkController';
 
-const frameworkController: FrameworkController = new FrameworkController(apiUrl);
+const frameworkController: FrameworkController = new FrameworkController();
 
-export interface FrameworksState extends BaseState {
-    frameworks: TFramework[];
-}
 
 const initialFrameworksState: FrameworksState = {
     frameworks: [],
@@ -44,14 +41,14 @@ const frameworksSlice = createSlice({
 });
 
 export const frameworkListSelector = createSelector(
-    (state): FrameworksState => state.frameworks,
+    (state: RootState): FrameworksState => state.frameworks,
     (slice): [TFramework[], any] => [slice.frameworks, slice.requestStatus]
 );
 
 export const frameworkSelector = createSelector(
     [
-        (state): FrameworksState => state.frameworks,
-        (_, frameworkId: number): number => frameworkId
+        (state: RootState): FrameworksState => state.frameworks,
+        (_: any, frameworkId: number): number => frameworkId
     ],
     (slice: FrameworksState, frameworkId: number): TFramework | null =>
         slice.frameworks.find(f => f.id === frameworkId) || null
@@ -59,9 +56,6 @@ export const frameworkSelector = createSelector(
 
 export const FrameworksSlice = frameworksSlice.reducer;
 
-export interface SectionsState extends BaseState {
-    sections: TSection[];
-}
 
 const initialSectionsState: SectionsState = {
     sections: [],
@@ -97,8 +91,8 @@ const sectionsSlice = createSlice({
 
 export const sectionsSelector = createSelector(
     [
-        (state): SectionsState => state.sections,
-        (_, frameworkId: number): number => frameworkId
+        (state: RootState): SectionsState => state.sections,
+        (_: any, frameworkId: number): number => frameworkId
     ],
     (slice: SectionsState, frameworkId: number): [TSection[], RequestStatus] => 
         [
@@ -117,9 +111,6 @@ export const frameworkDetailSelector = createSelector(
 
 export const SectionsSlice = sectionsSlice.reducer;
 
-export interface CapabilitiesState extends BaseState {
-    capabilities: TCapability[];
-}
 
 const initialCapabilitiesState: CapabilitiesState = {
     capabilities: [],
@@ -157,8 +148,8 @@ const capabilitiesSlice = createSlice({
 
 export const capabilitiesSelector = createSelector(
     [
-        (state): CapabilitiesState => state.capabilities,
-        (_, sectionId: number): number => sectionId
+        (state: RootState): CapabilitiesState => state.capabilities,
+        (_: any, sectionId: number): number => sectionId
     ],
     (slice: CapabilitiesState, sectionId: number): [TCapability[], RequestStatus] => 
         [
@@ -169,9 +160,6 @@ export const capabilitiesSelector = createSelector(
 
 export const CapabilitiesSlice = capabilitiesSlice.reducer;
 
-export interface BehaviorsState extends BaseState {
-    behaviors: TBehavior[];
-}
 
 const initialBehaviorsState: BehaviorsState = {
     behaviors: [],
@@ -209,10 +197,10 @@ const behaviorsSlice = createSlice({
 
 export const behaviorsSelector = createSelector(
     [
-        (state): BehaviorsState => state.behaviors,
-        (_, capabilityId: number): number => capabilityId
+        (state: RootState): BehaviorsState => state.behaviors,
+        (_: any, capabilityId: number): number => capabilityId
     ],
-    (slice: BehaviorsState, capabilityId: number): [TBehavior[], RequestStatus] => 
+    (slice: BehaviorsState, capabilityId: number): [TBehavior[], RequestStatus] =>
         [
             slice.behaviors.filter((b: TBehavior) => b.capabilityId === capabilityId),
             slice.requestStatus

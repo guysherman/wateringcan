@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { Route, Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { createSelector } from 'reselect';
 
-import { apiUrl } from '../config';
 
-import FrameworkController, { TFramework, TSection, TCapability } from '../controllers/FrameworkController';
 import { AppDispatch, useAppDispatch } from '../redux/Store';
 
 import {
@@ -21,6 +18,7 @@ import {
 
 import pageStyles from '../styles/Page.module.scss';
 import styles from '../styles/FrameworksPage.module.scss';
+import { RootState } from 'redux/Types';
 
 const FrameworksList = () => {
     const [frameworks, requestStatus] = useSelector(frameworkListSelector);
@@ -49,7 +47,7 @@ const Behavior = ({ name }: { id: number, name: string, description: string }) =
 const Capability = ({id, name, description }: { id: number, name: string, description: string }) => {
     const dispatch: AppDispatch = useAppDispatch();
     const [behaviors, requestStatus] = useSelector(
-        state => behaviorsSelector(state, id)
+        (state: RootState) => behaviorsSelector(state, id)
     );
 
     useEffect(() => {
@@ -76,7 +74,7 @@ const Capability = ({id, name, description }: { id: number, name: string, descri
 const Section = ({id, name, description}: { id: number, name: string, description: string }) => {
     const dispatch: AppDispatch = useAppDispatch();
     const [caps, requestStatus] = useSelector(
-        state => capabilitiesSelector(state, id)
+        (state: RootState) => capabilitiesSelector(state, id)
     );
 
     useEffect(() => {
@@ -102,7 +100,7 @@ const FrameworkDetail = () => {
     const { id } : { id: string } = useParams();
 
     const [framework, sections, requestStatus] = useSelector(
-        state => frameworkDetailSelector(state, Number(id))
+        (state: RootState) => frameworkDetailSelector(state, Number(id))
     );
 
 

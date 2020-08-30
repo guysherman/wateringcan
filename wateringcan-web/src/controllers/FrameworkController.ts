@@ -139,11 +139,11 @@ export interface IFrameworkController {
 }
 
 export default class FrameworkController implements IFrameworkController{
-    private apiUrl: string;
+    // private apiUrl: string;
 
-    constructor(apiUrl: string) {
-        this.apiUrl = apiUrl;
-    }
+    // constructor(apiUrl: string) {
+    //     this.apiUrl = apiUrl;
+    // }
 
     async getFrameworks(): Promise<TFramework[]> {
         await timeout(1000);

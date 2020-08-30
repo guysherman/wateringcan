@@ -1,16 +1,11 @@
-import { createSlice, createAsyncThunk, SerializedError } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { apiUrl } from '../../config';
-import LoginController, { User } from '../../controllers/LoginController';
+import LoginController from '../../controllers/LoginController';
+import { AuthenticationState } from 'redux/Types';
 
 const loginController: LoginController = new LoginController(apiUrl);
 
-export interface AuthenticationState {
-    user?: User;
-    requestStatus: 'idle' | 'loading' | 'success' | 'failure';
-    isLoggedIn: boolean;
-    error?: SerializedError;
-}
 
 const initialState: AuthenticationState = JSON.parse(localStorage.getItem('authentication/initialState') || 'null') || {
     requestStatus: 'idle',

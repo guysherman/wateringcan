@@ -38,7 +38,7 @@ router.post('/login', async (ctx) => {
         return;
     }
 
-    const permittedObjects = await users.getPermittedObjectsForUser(user.id);
+    const permittedObjects = await users.getPermittedObjectsForUser(user.id) || '';
     user.permittedObjects = permittedObjects;
 
     const token = NodeJwt.sign({

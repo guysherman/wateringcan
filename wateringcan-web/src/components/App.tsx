@@ -5,11 +5,12 @@ import Page from './Page';
 import LoginPage from './LoginPage';
 
 import '../styles/index.scss';
+import { RootState } from 'redux/Types';
 
 const App = () => {
     const isLoggedIn = useSelector(
         createSelector(
-            (state) => state.authentication,
+            (state: RootState) => state.authentication,
             (auth) => auth.isLoggedIn,
         )
     );
