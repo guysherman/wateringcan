@@ -15,7 +15,8 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"dbaeumer.vscode-eslint"
-	]
+	],
+	"forwardPorts": [3000, 8080]
 
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
 	// "runServices": [],

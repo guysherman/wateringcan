@@ -1,25 +1,36 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Route, Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { createSelector } from 'reselect';
 
 import { apiUrl } from '../config';
 
 import FrameworkController, { TFramework, TSection, TCapability } from '../controllers/FrameworkController';
+import { AppDispatch, useAppDispatch } from '../redux/Store';
+import {
+    getFrameworks,
+    getSectionsForFramework,
+    getCapabilitiesForSection,
+    getBehaviorsForCapability,
+    frameworkListSelector,
+    frameworkDetailSelector,
+    capabilitiesSelector,
+    behaviorsSelector,
+} from '../redux/slices/FrameworksSlice';
 
 import pageStyles from '../styles/Page.module.scss';
 import styles from '../styles/FrameworksPage.module.scss';
 
 const FrameworksList = () => {
-    const controller: FrameworkController = new FrameworkController(apiUrl, { token: '' });
-    const [frameworks, setFrameworks] = useState([] as TFramework[]);
-    
-    useEffect(() => {
-        controller.getFrameworks().then((f) => setFrameworks(f));
-    }, []);
-    
+    const [frameworks, requestStatus] = useSelector(frameworkListSelector);
+
     return (
         <div className={pageStyles.bodyContent}>
             <h1>Hello Frameworks</h1>
-            { frameworks.map(f => <div key={f.id} className={pageStyles.card}><Link to={`/frameworks/${f.id}`}>{ f.name }</Link></div>)}
+            { requestStatus === 'loading' ?
+                <span>Loading...</span> :
+                frameworks.map(f => <div key={f.id} className={pageStyles.card}><Link to={`/frameworks/${f.id}`}>{ f.name }</Link></div>)
+            }
         </div>
     );
 };
@@ -34,12 +45,15 @@ const Behavior = ({ name }: { id: number, name: string, description: string }) =
 };
 
 
-const Capability = ({id, name, description, fc}: { id: number, name: string, description: string, fc: FrameworkController }) => {
-    const [behaviors, setBehaviors] = useState<TCapability[]>([] as TCapability[]);
+const Capability = ({id, name, description }: { id: number, name: string, description: string }) => {
+    const dispatch: AppDispatch = useAppDispatch();
+    const [behaviors, requestStatus] = useSelector(
+        state => behaviorsSelector(state, id)
+    );
 
     useEffect(() => {
-        fc.getBehaviors(id).then(c => setBehaviors(c));
-    }, []);
+        dispatch(getBehaviorsForCapability(id));
+    }, [id])
     
     return (
         <div className={styles.capability} key={id}>
@@ -47,50 +61,72 @@ const Capability = ({id, name, description, fc}: { id: number, name: string, des
                 <h3>{name}</h3>
                 <span>{description}</span>
             </div>
-            <div className={styles.behaviors}>
-                { behaviors.map((b) => <Behavior {...b} key={b.id} />)}
-            </div>
+            { requestStatus === 'loading' ? 
+                <span>Loading...</span> :
+                <div className={styles.behaviors}>
+                    { behaviors.map((b) => <Behavior {...b} key={b.id} />)}
+                </div>
+            }
+            
         </div>
     );
 };
 
-const Section = ({id, name, description, fc}: { id: number, name: string, description: string, fc: FrameworkController }) => {
-    const [caps, setCaps] = useState<TCapability[]>([] as TCapability[]);
+const Section = ({id, name, description}: { id: number, name: string, description: string }) => {
+    const dispatch: AppDispatch = useAppDispatch();
+    const [caps, requestStatus] = useSelector(
+        state => capabilitiesSelector(state, id)
+    );
 
     useEffect(() => {
-        fc.getCapabilities(id).then(c => setCaps(c));
-    }, []);
-    
+        dispatch(getCapabilitiesForSection(id));
+    }, [id])
+
     return (
         <div className={styles.section} key={id}>
                 <div className={styles.sectionTitleBar}><span>{ name }</span><span> - { description }</span></div>
-                <div className={styles.sectionContent}>
-                    { caps.map(c => <Capability {...c} key={c.id} fc={fc} />)}
-                </div>
+                {
+                        requestStatus === 'loading' ?
+                    <span>Loading...</span> :
+                    <div className={styles.sectionContent}>
+                        { caps.map(c => <Capability {...c} key={c.id}  />)}
+                    </div>
+                }
             </div>
     );
 };
 
 const FrameworkDetail = () => {
-    const [framework, setFramework] = useState<TFramework>(null);
-    const controller: FrameworkController = new FrameworkController(apiUrl, { token: '' });
-
+    const dispatch: AppDispatch = useAppDispatch();
     const { id } : { id: string } = useParams();
 
+    const [framework, sections, requestStatus] = useSelector(
+        state => frameworkDetailSelector(state, Number(id))
+    );
+
+
     useEffect(() => {
-        controller.getFramework(parseInt(id)).then((f) => setFramework(f));
+        dispatch(getSectionsForFramework(Number(id)));
     }, [id]);
 
     return framework === null ? (<div></div>) : (
         <div className={pageStyles.bodyContent}>
             <h1>{ framework!.name }</h1>
-            { framework.sections && framework.sections.map(s => <Section {...s} fc={controller} key={s.id} />) }
+            { requestStatus === 'loading' ?
+            <span>Loading...</span>
+            : sections && sections.map(s => <Section {...s} key={s.id} />) }
         </div>
     );
 };
 
 
 const FrameworksPage = () => {
+    const dispatch: AppDispatch = useAppDispatch();
+    
+    useEffect(() => {
+        dispatch(getFrameworks());
+    }, []);
+    
     return (
         <div className={pageStyles.bodyContainer}>
             <Route path='/frameworks/:id' component={FrameworkDetail} />

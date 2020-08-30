@@ -12,7 +12,7 @@ export interface AuthenticationState {
     error?: SerializedError;
 }
 
-const initialState: AuthenticationState = {
+const initialState: AuthenticationState = JSON.parse(localStorage.getItem('authentication/initialState') || 'null') || {
     requestStatus: 'idle',
     isLoggedIn: false,
 };
@@ -33,15 +33,18 @@ const AuthenticationSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(doLogin.pending, (state) => {
             state.requestStatus = 'loading';
+            localStorage.setItem('authentication/initialState', 'null');
         });
         builder.addCase(doLogin.fulfilled, (state, action) => {
             state.user = action.payload;
             state.isLoggedIn = true;
-            state.requestStatus = 'idle';
+            state.requestStatus = 'success';
+            localStorage.setItem('authentication/initialState', JSON.stringify(state));
         });
         builder.addCase(doLogin.rejected, (state, action) => {
-            state.requestStatus = 'idle';
+            state.requestStatus = 'failure';
             state.error = action.error;
+            localStorage.setItem('authentication/initialState', 'null');
         });
     }
 });

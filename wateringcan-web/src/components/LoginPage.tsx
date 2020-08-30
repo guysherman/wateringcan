@@ -11,6 +11,7 @@ interface LoginForm {
     email: string | null,
     password: string | null,
     errorMessage: string | null,
+    loading: boolean,
 }
 
 const LoginPage = () => {
@@ -18,11 +19,25 @@ const LoginPage = () => {
         email: null,
         password: null,
         errorMessage: null,
+        loading: false,
     };
 
     const [loginForm, updateLoginForm] = useImmer(initialLoginForm);
 
     const dispatch: AppDispatch = useAppDispatch();
+
+    const setErrorMessage = (errorMessage: string) => {
+        updateLoginForm((draft) => {
+            draft.errorMessage = errorMessage;
+            draft.loading = false;
+        });
+    }
+
+    const setLoading = (isLoading: boolean) => {
+        updateLoginForm((draft) => { 
+            draft.loading = isLoading;
+        });
+    };
 
     const emailChanged = (event: React.FormEvent<HTMLInputElement>) => {
         const email: string = event.currentTarget.value;
@@ -40,17 +55,14 @@ const LoginPage = () => {
 
     const loginClicked = async () => {
         if (!(loginForm.email && loginForm.password)) {
-            updateLoginForm((draft) => {
-                draft.errorMessage = 'You must enter both a username and a password';
-            });
+            setErrorMessage('You must enter both a username and a password');
         } else {
             try {
+                setLoading(true);
                 const action = await dispatch(doLogin({ email: loginForm.email, password: loginForm.password }));
                 unwrapResult(action);
             } catch (err) {
-                updateLoginForm((draft) => {
-                    draft.errorMessage = 'Email or password incorrect';
-                });
+                setErrorMessage('Email or password incorrect');
             }
         }
     };
@@ -71,7 +83,7 @@ const LoginPage = () => {
                 </label>
                 <div className={styles['fieldRow-button']}>
                     <span className={styles.errorMessage}>{loginForm.errorMessage}</span>
-                    <button type="button" onClick={loginClicked}>Login</button>
+                    <button type="button" onClick={loginClicked} disabled={loginForm.loading}>Login</button>
                 </div>
             </div>
         </div>
