@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { apiUrl } from '../config';
-import LoginController, { User, ILoginController } from '../controllers/LoginController';
+import { RootState } from '../redux/Store';
+import { AuthenticationState } from '../redux/slices/AuthenticationSlice';
+
+import { useSelector } from 'react-redux';
+import { createSelector } from 'reselect';
 
 import styles from '../styles/NavBar.module.scss';
 
@@ -13,38 +16,23 @@ const allMenuItems = [
 
 const NavBar = () => {
     
-    const [menuItems, setMenuItems] = useState([{ title: 'Loading...', path: '#', permission: '' }]);
     const { pathname } = useLocation();
+    const permittedObjects = useSelector(
+        createSelector(
+            (state: RootState) => state.authentication,
+            (slice: AuthenticationState ) => slice.user!.permittedObjects,
+        )
+    );
+
+    const menuItems = allMenuItems.filter(
+        i => (
+            permittedObjects
+                .toLowerCase()
+                .includes(i.permission.toLowerCase())
+        )
+    );
 
     console.log(location);
-
-    const updateMenuBar = (permittedObjects: string) => {
-        const newMenuItems = allMenuItems.filter(
-            i => (
-                permittedObjects
-                    .toLowerCase()
-                    .includes(i.permission.toLowerCase())
-            )
-        );
-        setMenuItems(newMenuItems);
-    };
-
-    // Have to update this to use redux, not context
-    // useEffect(() => {
-    //     controller.getPermittedObjects(user.id!).then((response: User) => {
-    //         switch (response.state) {
-    //             case 'error':
-    //                 console.log(response);
-    //                 break;
-    //             case 'success':
-    //                 // eslint-disable-next-line no-console
-    //                 updateMenuBar(response.response.permittedObjects);
-    //                 break;
-    //             default:
-    //                 console.log('Unknown error');
-    //         }
-    //     });
-    // }, [user]);
 
     return (
         <div className={styles.navBar}>

@@ -146,19 +146,22 @@ export default class FrameworkController implements IFrameworkController{
     }
 
     async getFrameworks(): Promise<TFramework[]> {
-        await timeout(2000);
+        await timeout(1000);
         return getData();
     }
 
     async getSections(frameworkId: number): Promise<TSection[]> {
+        await timeout(1000);
         return sections[frameworkId - 1] || [];
     }
 
     async getCapabilities(sectionId: number): Promise<TCapability[]> {
+        await timeout(1000);
         return capabilities[sectionId - 1] || [];
     }
 
     async getBehaviors(capabilityId: number): Promise<TBehavior[]> {
+        await timeout(1000);
         return behaviors[capabilityId - 1] || [];
     }
 }

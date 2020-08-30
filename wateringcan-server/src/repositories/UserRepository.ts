@@ -5,6 +5,7 @@ export interface UserRecord {
     firstName: string;
     lastName: string;
     email: string;
+    permittedObjects?: string;
     hash: string;
 }
 
