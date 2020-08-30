@@ -121,10 +121,10 @@ const frameworks = [
     },
 ];
 
-const timeout = async(time: number) => {
-    const p = new Promise(resolve => setTimeout(resolve, time));
-    return p;
-}
+// const timeout = async(time: number) => {
+//     const p = new Promise(resolve => setTimeout(resolve, time));
+//     return p;
+// }
 
 
 function getData(): TFramework[] {
