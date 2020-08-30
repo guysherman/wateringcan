@@ -75,11 +75,11 @@ const LoginPage = () => {
                 </div>
                 <label className={styles.fieldRow} htmlFor="email">
                     Email:
-                    <input id="email" type="text" onChange={emailChanged} />
+                    <input id="email" type="text" onChange={emailChanged} size={17} />
                 </label>
                 <label className={styles.fieldRow} htmlFor="password">
                     Password:
-                    <input id="password" type="password" onChange={passwordChanged} />
+                    <input id="password" type="password" onChange={passwordChanged} size={17} />
                 </label>
                 <div className={styles['fieldRow-button']}>
                     <span className={styles.errorMessage}>{loginForm.errorMessage}</span>

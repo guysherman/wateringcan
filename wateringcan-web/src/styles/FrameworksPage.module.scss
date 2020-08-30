@@ -72,6 +72,7 @@
 }
 
 .behavior {
+    box-sizing: border-box;
     width: 100%;
 
     padding: 0.2rem calc(0.4rem - 1px) 0.2rem 0rem;
@@ -93,9 +94,28 @@
         margin-left: 0.4rem;
 
         font-size: 0.8rem;
+
+        
     }
 
     &:nth-child(even) {
         background-color: $Tema-de-color-30-6-hex;
     }
+
+    &Input {
+        @extend .behavior;
+        justify-content: space-between;
+    }
+}
+
+.level {
+    text-align: right;
+}
+
+.levelInput {
+    text-align: right;
+}
+
+.nameInput {
+    width: 100%;
 }

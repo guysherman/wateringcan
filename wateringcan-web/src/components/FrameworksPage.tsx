@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, createRef } from 'react';
 import { Route, Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -34,11 +34,52 @@ const FrameworksList = () => {
     );
 };
 
-const Behavior = ({ name }: { id: number, name: string, description: string }) => {
+const BehaviorInput = () => {
+    const [level, setLevel] = useState('1');
+    const nameRef = createRef<HTMLInputElement>();
+
+    const levelChanged = (event: React.FormEvent<HTMLInputElement>) => {
+        const inputText: string = event.currentTarget.value;
+        if (inputText === '') {
+            setLevel(inputText);
+            return;
+        }
+
+        const newLevel = Number(inputText) || level;
+        setLevel(newLevel.toString());
+    }
+
+    const keyPressed = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            console.log(event.target);
+            console.log('Enter!');
+
+            // TODO: dispatch an action here to add the behavior
+
+            nameRef!.current!.value = '';
+            nameRef?.current?.focus();
+        }
+    }
+    
+    return (
+        <div className={styles.behaviorInput}>
+            <input className={styles.nameInput}
+                ref={nameRef}
+                onKeyPress={keyPressed} />
+            <input className={styles.levelInput}
+                size={4}
+                value={level}
+                onChange={levelChanged}
+                onKeyPress={keyPressed}/>
+        </div>
+    );
+};
+
+const Behavior = ({ name, level }: { id: number, name: string, description: string, level: number }) => {
     return (
         <div className={styles.behavior}>
             <span>{name}</span>
-            <button>Never / Seldom</button>
+            <span className={styles.level}>{level}</span>
         </div>
     )
 };
@@ -64,6 +105,7 @@ const Capability = ({id, name, description }: { id: number, name: string, descri
                 <span>Loading...</span> :
                 <div className={styles.behaviors}>
                     { behaviors.map((b) => <Behavior {...b} key={b.id} />)}
+                    <BehaviorInput />
                 </div>
             }
             
