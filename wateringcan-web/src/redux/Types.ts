@@ -1,8 +1,10 @@
 import { SerializedError } from '@reduxjs/toolkit';
-import { User } from 'controllers/LoginController';
-import { TFramework, TSection, TCapability, TBehavior } from 'controllers/FrameworkController';
+import { User } from '../controllers/LoginController';
+import {
+    TFramework, TSection, TCapability, TBehavior,
+} from '../controllers/FrameworkController';
 
-export type RequestStatus = 'idle' | 'loading' | 'success' | 'failure';
+export type RequestStatus = 'idle' | 'loading' | 'saving' | 'success' | 'failure';
 
 export interface BaseState {
     requestStatus: RequestStatus;
@@ -11,7 +13,7 @@ export interface BaseState {
 
 export interface AuthenticationState {
     user?: User;
-    requestStatus: 'idle' | 'loading' | 'success' | 'failure';
+    requestStatus: 'idle' | 'loading' | 'saving' | 'success' | 'failure';
     isLoggedIn: boolean;
     error?: SerializedError;
 }

@@ -1,5 +1,5 @@
-
-
+/* eslint-disable no-plusplus */
+/* eslint-disable class-methods-use-this */
 export interface TBehavior {
     id: number;
     name: string;
@@ -61,7 +61,7 @@ const behaviors: TBehavior[][] = [
             capabilityId: 1,
         },
     ],
-]
+];
 
 const capabilities: TCapability[][] = [
     [
@@ -83,8 +83,8 @@ const capabilities: TCapability[][] = [
             description: 'Driving, Flying, Swimming, Riding',
             sectionId: 1,
         },
-    ]
-]
+    ],
+];
 
 const sections: TSection[][] = [
     [
@@ -117,7 +117,7 @@ const frameworks = [
     },
     {
         id: 2,
-        name: 'Test Framework - Seed 2'
+        name: 'Test Framework - Seed 2',
     },
 ];
 
@@ -125,7 +125,6 @@ const frameworks = [
 //     const p = new Promise(resolve => setTimeout(resolve, time));
 //     return p;
 // }
-
 
 function getData(): TFramework[] {
     return frameworks;
@@ -138,7 +137,7 @@ export interface IFrameworkController {
     getBehaviors(capabilityId: number): Promise<TBehavior[]>;
 }
 
-export default class FrameworkController implements IFrameworkController{
+export default class FrameworkController implements IFrameworkController {
     // private apiUrl: string;
 
     // constructor(apiUrl: string) {
@@ -159,5 +158,21 @@ export default class FrameworkController implements IFrameworkController{
 
     async getBehaviors(capabilityId: number): Promise<TBehavior[]> {
         return behaviors[capabilityId - 1] || [];
+    }
+
+    async addBehavior(capabilityId: number, behavior: TBehavior): Promise<TBehavior> {
+        const behaviorSet: TBehavior[] = behaviors[capabilityId - 1];
+        if (behaviorSet) {
+            const ids = behaviorSet.map((b) => b.id);
+            const maxId = Math.max(...ids);
+            const newId = maxId + 1;
+            behavior.id = newId;
+            behavior.capabilityId = capabilityId;
+            behaviorSet.push(behavior);
+        }
+
+        // await timeout(2000);
+
+        return behavior;
     }
 }

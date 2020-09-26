@@ -41,7 +41,6 @@ export default class LoginController implements ILoginController {
         const result : User = await response.json();
         Cookies.set('x-jwt-token', result.token);
         return result;
-
     }
 
     async getPermittedObjects(userId: string) : Promise<String> {
@@ -52,7 +51,7 @@ export default class LoginController implements ILoginController {
             cache: 'no-cache',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${Cookies.get('x-jwt-token') || ''}`
+                Authorization: `Bearer ${Cookies.get('x-jwt-token') || ''}`,
             },
         });
 
