@@ -12,15 +12,15 @@ FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-${VARIANT}
 # these values to ensure the container user's UID/GID matches your local values.
 # See https://aka.ms/vscode-remote/containers/non-root-user for details.
 ARG USERNAME=node
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USER_UID=1027
+ARG USER_GID=1000
 
 # [Optional] Update UID/GID if needed
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
         groupmod --gid $USER_GID $USERNAME \
         && usermod --uid $USER_UID --gid $USER_GID $USERNAME \
-        && chmod -R $USER_UID:$USER_GID /home/$USERNAME \
-        && chmod -R $USER_UID:root /usr/local/share/nvm /usr/local/share/npm-global; \
+        && chown -R $USER_UID:$USER_GID /home/$USERNAME \
+        && chown -R $USER_UID:root /usr/local/share/nvm /usr/local/share/npm-global; \
     fi
 
 # ** [Optional] Uncomment this section to install additional packages. **
