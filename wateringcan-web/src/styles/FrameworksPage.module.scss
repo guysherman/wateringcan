@@ -62,6 +62,18 @@
     }
 }
 
+.newCapability {
+    @extend .capability;
+    justify-content: center;
+}
+
+.addCapabilityButton {
+    width: 2rem;
+    height: 2rem;
+
+    border-radius: 1rem;
+}
+
 .behaviors {
     flex-grow: 1;
 
@@ -118,4 +130,62 @@
 
 .nameInput {
     width: 100%;
+}
+
+.formPanel {
+    grid-area: loginPanel;
+    display: flex;
+    
+    flex-direction: column;
+    justify-content: flex-start;
+
+
+    background-color: $Tema-de-color-30-2-hex;
+    border-radius: 10px;
+
+}
+
+.fieldRow {
+    display: flex;
+
+    margin: 0.5rem 5em 0rem 5rem;
+
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+
+    &-button {
+        @extend .fieldRow;
+        justify-content: flex-end;
+
+        button {
+            margin-left: 0.5rem;
+        }
+    }
+}
+
+.errorMessage {
+    font-size: 0.5rem;
+    color: red;
+}
+
+.newSection {
+    @extend .section;
+    border: 0px solid black;
+}
+
+.newSectionTitleBar {
+    @extend .sectionTitleBar;
+    border: 0px solid black;
+    background: none;
+}
+
+.newSectionContent {
+    @extend .sectionContent;
+    border: 0px solid black;
+    background: none;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
 }

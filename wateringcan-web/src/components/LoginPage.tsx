@@ -31,10 +31,10 @@ const LoginPage = () => {
             draft.errorMessage = errorMessage;
             draft.loading = false;
         });
-    }
+    };
 
     const setLoading = (isLoading: boolean) => {
-        updateLoginForm((draft) => { 
+        updateLoginForm((draft) => {
             draft.loading = isLoading;
         });
     };
@@ -59,7 +59,9 @@ const LoginPage = () => {
         } else {
             try {
                 setLoading(true);
-                const action = await dispatch(doLogin({ email: loginForm.email, password: loginForm.password }));
+                const action = await dispatch(
+                    doLogin({ email: loginForm.email, password: loginForm.password }),
+                );
                 unwrapResult(action);
             } catch (err) {
                 setErrorMessage('Email or password incorrect');

@@ -1,7 +1,9 @@
 import React, { useEffect, useState, createRef } from 'react';
 import { Route, Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useImmer } from 'use-immer';
 
+import { TBehavior, TCapability, TSection } from '../controllers/FrameworkController';
 import { RootState } from '../redux/Types';
 import { AppDispatch, useAppDispatch } from '../redux/Store';
 
@@ -15,11 +17,12 @@ import {
     frameworkDetailSelector,
     capabilitiesSelector,
     behaviorsSelector,
+    addCapabilityToSection,
+    addSectionToFramework,
 } from '../redux/slices/FrameworksSlice';
 
 import pageStyles from '../styles/Page.module.scss';
 import styles from '../styles/FrameworksPage.module.scss';
-import { TBehavior } from 'controllers/FrameworkController';
 
 const FrameworksList = () => {
     const [frameworks, requestStatus] = useSelector(frameworkListSelector);
@@ -34,7 +37,7 @@ const FrameworksList = () => {
     );
 };
 
-const BehaviorInput = ({capabilityId}: {capabilityId: number}) => {
+const BehaviorInput = ({ capabilityId }: {capabilityId: number}) => {
     const dispatch: AppDispatch = useAppDispatch();
     const [level, setLevel] = useState('1');
     const nameRef = createRef<HTMLInputElement>();
@@ -63,11 +66,11 @@ const BehaviorInput = ({capabilityId}: {capabilityId: number}) => {
                 capabilityId,
             };
 
-            // TODO: dispatch an action here to add the behavior
-            dispatch(addBehaviorToCapability({ capabilityId, behavior }));
-
             nameRef!.current!.value = '';
             nameRef?.current?.focus();
+
+            // TODO: dispatch an action here to add the behavior
+            dispatch(addBehaviorToCapability({ capabilityId, behavior }));
         }
     };
 
@@ -140,6 +143,101 @@ const Capability = ({ id, name, description }: {
     );
 };
 
+interface NewCapabilityForm {
+    name: string,
+    description: string,
+    errorMessage: string,
+}
+
+const NewCapability = ({ sectionId }: {sectionId: number}) => {
+    const dispatch: AppDispatch = useAppDispatch();
+    const [formVisible, setFormVisibility] = useState(false);
+    const [newCapForm, updateNewCapForm]: [NewCapabilityForm, any] = useImmer({
+        name: '',
+        description: '',
+        errorMessage: '',
+    });
+
+    const nameChanged = (event: React.FormEvent<HTMLInputElement>) => {
+        const name: string = event.currentTarget.value;
+        updateNewCapForm((draft: NewCapabilityForm) => {
+            draft.name = name;
+        });
+    };
+
+    const descriptionChanged = (event: React.FormEvent<HTMLTextAreaElement>) => {
+        const description: string = event.currentTarget.value;
+        updateNewCapForm((draft: NewCapabilityForm) => {
+            draft.description = description;
+        });
+    };
+
+    const addCapability = () => {
+        const { name, description } = newCapForm;
+        const capability: TCapability = {
+            name,
+            description,
+            id: -1,
+            sectionId,
+        };
+
+        dispatch(addCapabilityToSection({ sectionId, capability }));
+
+        setFormVisibility(false);
+        updateNewCapForm((draft: NewCapabilityForm) => {
+            draft.name = '';
+            draft.description = '';
+        });
+    };
+
+    const cancelForm = () => {
+        setFormVisibility(false);
+    };
+
+    return (
+        <div className={styles.newCapability} key={9999999}>
+            {
+                !formVisible && <button className={styles.addCapabilityButton} type="button" onClick={() => setFormVisibility(true)}>+</button>
+            }
+            {
+                formVisible && (
+                    <div className={styles.formPanel}>
+                        <div>
+                            <h1>New Capability</h1>
+                        </div>
+                        <label className={styles.fieldRow} htmlFor="email">
+                            Capability Name:
+                            <input
+                              id="capabilityName"
+                              type="text"
+                              size={17}
+                              value={newCapForm.name}
+                              onChange={nameChanged}
+                            />
+                        </label>
+                        <label className={styles.fieldRow} htmlFor="password">
+                            Description:
+                            <textarea
+                              name="categoryDescription"
+                              id="categoryDescription"
+                              cols={26}
+                              rows={4}
+                              value={newCapForm.description}
+                              onChange={descriptionChanged}
+                            />
+                        </label>
+                        <div className={styles['fieldRow-button']}>
+                            <span className={styles.errorMessage}>{newCapForm.errorMessage}</span>
+                            <button type="button" onClick={cancelForm}>Cancel</button>
+                            <button type="button" onClick={addCapability}>Add</button>
+                        </div>
+                    </div>
+                )
+            }
+        </div>
+    );
+};
+
 const Section = ({ id, name, description }: { id: number, name: string, description: string }) => {
     const dispatch: AppDispatch = useAppDispatch();
     const [caps, requestStatus] = useSelector(
@@ -173,9 +271,108 @@ const Section = ({ id, name, description }: { id: number, name: string, descript
                                   key={c.id}
                                 />
                             ))}
+                            <NewCapability sectionId={id} />
                         </div>
                     )
             }
+        </div>
+    );
+};
+
+interface NewSectionForm {
+    name: string,
+    description: string,
+    errorMessage: string,
+}
+
+const NewSection = ({ frameworkId }: {frameworkId: number}) => {
+    const dispatch: AppDispatch = useAppDispatch();
+    const [formVisible, setFormVisibility]: [boolean, any] = useState(false);
+    const [form, updateForm]: [NewCapabilityForm, any] = useImmer({
+        name: '',
+        description: '',
+        errorMessage: '',
+    });
+
+    const nameChanged = (event: React.FormEvent<HTMLInputElement>) => {
+        const name = event.currentTarget.value;
+        updateForm((draft: NewSectionForm) => {
+            draft.name = name;
+        });
+    };
+
+    const descriptionChanged = (event: React.FormEvent<HTMLTextAreaElement>) => {
+        const description = event.currentTarget.value;
+        updateForm((draft: NewSectionForm) => {
+            draft.description = description;
+        });
+    };
+
+    const addSection = () => {
+        const section: TSection = {
+            id: -1,
+            name: form.name,
+            description: form.description,
+            frameworkId,
+        };
+
+        dispatch(addSectionToFramework({ frameworkId, section }));
+
+        setFormVisibility(false);
+
+        updateForm((draft: NewSectionForm) => {
+            draft.name = '';
+            draft.description = '';
+        });
+    };
+
+    return (
+        <div className={styles.newSection}>
+            <div className={styles.newSectionTitleBar} />
+            <div className={styles.newSectionContent}>
+                { !formVisible && (
+                    <button
+                      className={styles.addCapabilityButton}
+                      type="button"
+                      onClick={() => setFormVisibility(true)}
+                    >
+                        +
+                    </button>
+                )}
+                { formVisible && (
+                    <div className={styles.formPanel}>
+                        <div>
+                            <h1>New Section</h1>
+                        </div>
+                        <label className={styles.fieldRow} htmlFor="email">
+                            Capability Name:
+                            <input
+                              id="sectionName"
+                              type="text"
+                              size={17}
+                              value={form.name}
+                              onChange={nameChanged}
+                            />
+                        </label>
+                        <label className={styles.fieldRow} htmlFor="password">
+                            Description:
+                            <textarea
+                              name="sectionDescription"
+                              id="sectionDescription"
+                              cols={26}
+                              rows={4}
+                              value={form.description}
+                              onChange={descriptionChanged}
+                            />
+                        </label>
+                        <div className={styles['fieldRow-button']}>
+                            <span className={styles.errorMessage}>{form.errorMessage}</span>
+                            <button type="button" onClick={() => setFormVisibility(false)}>Cancel</button>
+                            <button type="button" onClick={addSection}>Add</button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
@@ -200,6 +397,7 @@ const FrameworkDetail = () => {
                 : sections && sections.map((s) => (
                     <Section id={s.id} name={s.name} description={s.description} key={s.id} />
             )) }
+            <NewSection frameworkId={framework!.id} />
         </div>
     );
 };

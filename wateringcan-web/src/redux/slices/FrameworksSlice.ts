@@ -72,6 +72,14 @@ export const getSectionsForFramework = createAsyncThunk(
     },
 );
 
+export const addSectionToFramework = createAsyncThunk(
+    'sections/addToFramework',
+    async (arg: {frameworkId: number, section: TSection}): Promise<TSection> => {
+        const section = await frameworkController.addSection(arg.frameworkId, arg.section);
+        return section;
+    },
+);
+
 const sectionsSlice = createSlice({
     name: 'sections',
     initialState: initialSectionsState,
@@ -85,6 +93,22 @@ const sectionsSlice = createSlice({
             state.requestStatus = 'success';
         });
         builder.addCase(getSectionsForFramework.rejected, (state, action) => {
+            state.requestStatus = 'failure';
+            state.error = action.error;
+        });
+
+        builder.addCase(addSectionToFramework.pending, (state, action) => {
+            state.requestStatus = 'saving';
+            state.sections = [...state.sections, action.meta.arg.section];
+        });
+        builder.addCase(addSectionToFramework.fulfilled, (state, action) => {
+            const newSections = [...state.sections, action.payload]
+                .filter((s) => s.id !== action.meta.arg.section.id);
+
+            state.sections = newSections;
+            state.requestStatus = 'success';
+        });
+        builder.addCase(addSectionToFramework.rejected, (state, action) => {
             state.requestStatus = 'failure';
             state.error = action.error;
         });
@@ -124,6 +148,14 @@ export const getCapabilitiesForSection = createAsyncThunk(
     },
 );
 
+export const addCapabilityToSection = createAsyncThunk(
+    'capabilities/addToSection',
+    async (arg: {sectionId: number, capability: TCapability}): Promise<TCapability> => {
+        const newCap = await frameworkController.addCapability(arg.sectionId, arg.capability);
+        return newCap;
+    },
+);
+
 const capabilitiesSlice = createSlice({
     name: 'capabilities',
     initialState: initialCapabilitiesState,
@@ -139,6 +171,21 @@ const capabilitiesSlice = createSlice({
             state.requestStatus = 'success';
         });
         builder.addCase(getCapabilitiesForSection.rejected, (state, action) => {
+            state.requestStatus = 'failure';
+            state.error = action.error;
+        });
+
+        builder.addCase(addCapabilityToSection.pending, (state, action) => {
+            state.requestStatus = 'saving';
+            state.capabilities = [...state.capabilities, action.meta.arg.capability];
+        });
+        builder.addCase(addCapabilityToSection.fulfilled, (state, action) => {
+            const newCaps = [...state.capabilities, action.payload]
+                .filter((c) => c.id !== action.meta.arg.capability.id);
+            state.capabilities = newCaps;
+            state.requestStatus = 'success';
+        });
+        builder.addCase(addCapabilityToSection.rejected, (state, action) => {
             state.requestStatus = 'failure';
             state.error = action.error;
         });
@@ -206,7 +253,7 @@ const behaviorsSlice = createSlice({
         });
         builder.addCase(addBehaviorToCapability.fulfilled, (state, action) => {
             const newBehavs = [...state.behaviors, action.payload]
-                .filter((b) => b !== action.meta.arg.behavior);
+                .filter((b) => b.id !== action.meta.arg.behavior.id);
             state.behaviors = newBehavs;
             state.requestStatus = 'success';
         });

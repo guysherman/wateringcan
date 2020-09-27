@@ -152,8 +152,39 @@ export default class FrameworkController implements IFrameworkController {
         return sections[frameworkId - 1] || [];
     }
 
+    async addSection(frameworkId: number, section: TSection): Promise<TSection> {
+        const secSet: TSection[] = sections[frameworkId - 1] || [];
+
+        const ids = secSet.map((s) => s.id);
+        const maxId = Math.max(...ids);
+        const newId = maxId + 1;
+
+        const newSection: TSection = {
+            id: newId,
+            name: section.name,
+            description: section.description,
+            frameworkId,
+        };
+
+        const newSecSet: TSection[] = [...secSet, newSection];
+        sections[frameworkId - 1] = newSecSet;
+        return newSection;
+    }
+
     async getCapabilities(sectionId: number): Promise<TCapability[]> {
         return capabilities[sectionId - 1] || [];
+    }
+
+    async addCapability(sectionId: number, capability: TCapability): Promise<TCapability> {
+        const capSet: TCapability[] = capabilities[sectionId - 1] || [];
+
+        const ids = capSet.map((c) => c.id);
+        const maxId = Math.max(...ids);
+        const newId = maxId + 1;
+        const newCapability = { ...capability, id: newId, sectionId };
+
+        capabilities[sectionId - 1] = [...capSet, newCapability];
+        return newCapability;
     }
 
     async getBehaviors(capabilityId: number): Promise<TBehavior[]> {
@@ -161,18 +192,14 @@ export default class FrameworkController implements IFrameworkController {
     }
 
     async addBehavior(capabilityId: number, behavior: TBehavior): Promise<TBehavior> {
-        const behaviorSet: TBehavior[] = behaviors[capabilityId - 1];
-        if (behaviorSet) {
-            const ids = behaviorSet.map((b) => b.id);
-            const maxId = Math.max(...ids);
-            const newId = maxId + 1;
-            behavior.id = newId;
-            behavior.capabilityId = capabilityId;
-            behaviorSet.push(behavior);
-        }
+        const behaviorSet: TBehavior[] = behaviors[capabilityId - 1] || [];
 
-        // await timeout(2000);
+        const ids = behaviorSet.map((b) => b.id);
+        const maxId = Math.max(...ids);
+        const newId = maxId + 1;
+        const newBehav = { ...behavior, id: newId, capabilityId };
 
-        return behavior;
+        behaviors[capabilityId - 1] = [...behaviorSet, newBehav];
+        return newBehav;
     }
 }
